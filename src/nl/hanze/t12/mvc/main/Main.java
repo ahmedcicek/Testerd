@@ -15,7 +15,7 @@ public class Main {
 //	private Controller controller;
 	private SimulatorView simulatorview;
 	public Main() {
-		simulator=new Simulator();//hoi, ik ben Jurian 2133
+		simulator=new Simulator();//hoi, ik ben Jurian 213322
 //		controller=new Controller(model);
 //		countview=new CountView(model);
 //		pieview=new PieView(model);
