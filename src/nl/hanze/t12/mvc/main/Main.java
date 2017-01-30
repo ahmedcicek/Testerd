@@ -7,7 +7,7 @@ import nl.hanze.t12.mvc.model.*;
 import nl.hanze.t12.mvc.view.SimulatorView;
 
 public class Main {
-	private Model model;
+	private Simulator simulator;
 	private JFrame screen;
 //	private AbstractView countview;
 //	private AbstractView pieview;
@@ -15,12 +15,12 @@ public class Main {
 //	private Controller controller;
 	private SimulatorView simulatorview;
 	public Main() {
-		model=new Model();
+		simulator=new Simulator();
 //		controller=new Controller(model);
 //		countview=new CountView(model);
 //		pieview=new PieView(model);
 //		staafview=new StaafView(model);
-		simulatorview=new SimulatorView(model);
+		simulatorview=new SimulatorView(3,6,30);
 
 		screen=new JFrame("Model View Controller/Dynamic Model with thread");
 		screen.setSize(650, 285);

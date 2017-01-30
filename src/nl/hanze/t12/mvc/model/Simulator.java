@@ -37,6 +37,7 @@ public class Simulator extends AbstractModel {
         paymentCarQueue = new CarQueue();
         exitCarQueue = new CarQueue();
         simulatorView = new SimulatorView(3, 6, 30);
+        run();
     }
 
     public void run() {
