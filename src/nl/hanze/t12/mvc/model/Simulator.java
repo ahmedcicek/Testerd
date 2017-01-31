@@ -1,20 +1,17 @@
 package nl.hanze.t12.mvc.model;
 
-import nl.hanze.t12.mvc.view.SimulatorView;
-
 import java.util.Random;
 
 public class Simulator extends AbstractModel {
 
 	private static final String AD_HOC = "1";
 	private static final String PASS = "2";
-	
-	
+    private Thread thread = null;
+	private Parkeergarage parkeergarage;
 	private CarQueue entranceCarQueue;
     private CarQueue entrancePassQueue;
     private CarQueue paymentCarQueue;
     private CarQueue exitCarQueue;
-    private SimulatorView simulatorView;
 
     private int day = 0;
     private int hour = 0;
@@ -36,20 +33,74 @@ public class Simulator extends AbstractModel {
         entrancePassQueue = new CarQueue();
         paymentCarQueue = new CarQueue();
         exitCarQueue = new CarQueue();
-        simulatorView = new SimulatorView(3, 6, 30);
-        run();
+        parkeergarage = new Parkeergarage(3,6,30);
+    }
+
+    public Parkeergarage getParkeergarage() {
+        return parkeergarage;
     }
 
     public void run() {
-        for (int i = 0; i < 10000; i++) {
-            tick();
+        if(thread==null){
+            thread =new Thread (new Runnable() {
+
+                  @Override
+                  public void run() {
+                       for (int i = 0; i < 10000; i++) {
+                           tick();
+                       }
+                   }
+            });
+            thread.start();
         }
     }
 
-    private void tick() {
+    public void runTien() {
+        if(thread==null){
+            thread =new Thread (new Runnable() {
+
+                @Override
+                public void run() {
+                    for (int i = 0; i <= 10; i++) {
+                        tick();
+                    }
+                }
+            });
+            thread.start();
+        } else if (Thread.currentThread().isAlive()){
+            thread =new Thread (new Runnable() {
+
+                @Override
+                public void run() {
+                    for (int i = 0; i <= 10; i++) {
+                        tick();
+                    }
+                }
+            });
+            thread.start();
+        }
+    }
+
+    public void runHonderd() {
+        if(thread==null){
+            thread =new Thread (new Runnable() {
+
+                @Override
+                public void run() {
+                    for (int i = 0; i < 100; i++) {
+                        tick();
+                    }
+                }
+            });
+            thread.start();
+        }
+    }
+
+    public void tick() {
     	advanceTime();
     	handleExit();
-    	updateViews();
+    	parkeergarage.tick();
+        notifyViews();
     	// Pause.
         try {
             Thread.sleep(tickPause);
@@ -82,17 +133,12 @@ public class Simulator extends AbstractModel {
     	carsEntering(entranceCarQueue);  	
     }
     
-    private void handleExit(){
+    public void handleExit(){
         carsReadyToLeave();
         carsPaying();
         carsLeaving();
     }
-    
-    private void updateViews(){
-    	simulatorView.tick();
-        // Update the car park view.
-        simulatorView.updateView();	
-    }
+
     
     private void carsArriving(){
     	int numberOfCars=getNumberOfCars(weekDayArrivals, weekendArrivals);
@@ -105,18 +151,18 @@ public class Simulator extends AbstractModel {
         int i=0;
         // Remove car from the front of the queue and assign to a parking space.
     	while (queue.carsInQueue()>0 && 
-    			simulatorView.getNumberOfOpenSpots()>0 && 
+    			parkeergarage.getNumberOfOpenSpots()>0 &&
     			i<enterSpeed) {
             Car car = queue.removeCar();
-            Location freeLocation = simulatorView.getFirstFreeLocation();
-            simulatorView.setCarAt(freeLocation, car);
+            Location freeLocation = parkeergarage.getFirstFreeLocation();
+            parkeergarage.setCarAt(freeLocation, car);
             i++;
         }
     }
     
     private void carsReadyToLeave(){
         // Add leaving cars to the payment queue.
-        Car car = simulatorView.getFirstLeavingCar();
+        Car car = parkeergarage.getFirstLeavingCar();
         while (car!=null) {
         	if (car.getHasToPay()){
 	            car.setIsPaying(true);
@@ -125,7 +171,7 @@ public class Simulator extends AbstractModel {
         	else {
         		carLeavesSpot(car);
         	}
-            car = simulatorView.getFirstLeavingCar();
+            car = parkeergarage.getFirstLeavingCar();
         }
     }
 
@@ -180,7 +226,7 @@ public class Simulator extends AbstractModel {
     }
     
     private void carLeavesSpot(Car car){
-    	simulatorView.removeCarAt(car.getLocation());
+    	parkeergarage.removeCarAt(car.getLocation());
         exitCarQueue.addCar(car);
     }
 

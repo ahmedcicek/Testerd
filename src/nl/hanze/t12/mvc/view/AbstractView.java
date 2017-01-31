@@ -4,15 +4,15 @@ import javax.swing.*;
 import nl.hanze.t12.mvc.model.*;
 
 public abstract class AbstractView extends JPanel {
-	protected Model model;
+	protected Simulator simulator;
 
-	public AbstractView(Model model) {
-		this.model=model;
-		model.addView(this);
+	public AbstractView(Simulator simulator) {
+		this.simulator=simulator;
+		simulator.addView(this);
 	}
 	
-	public Model getModel() {
-		return model;
+	public Simulator getModel() {
+		return simulator;
 	}
 	
 	public void updateView() {
