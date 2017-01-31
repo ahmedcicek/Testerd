@@ -3,7 +3,7 @@ package nl.hanze.t12.mvc.view;
 import javax.swing.*;
 import nl.hanze.t12.mvc.model.*;
 
-public abstract class AbstrfactView extends JPanel {
+public abstract class AbstractView extends JPanel {
 	protected Simulator simulator;
 
 	public AbstractView(Simulator simulator) {
