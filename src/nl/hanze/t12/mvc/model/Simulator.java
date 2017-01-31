@@ -94,7 +94,20 @@ public class Simulator extends AbstractModel {
             });
             thread.start();
         }
+        else if (Thread.currentThread().isAlive()){
+            thread =new Thread (new Runnable() {
+
+                @Override
+                public void run() {
+                    for (int i = 0; i <= 10; i++) {
+                        tick();
+                    }
+                }
+            });
+            thread.start();
+        }
     }
+
 
     public void tick() {
     	advanceTime();
